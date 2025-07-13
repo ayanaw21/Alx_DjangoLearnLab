@@ -1,6 +1,6 @@
 # LibraryProject
 
-This is the initial Django project for the Introduction to Django task. The project was created using `django-admin startproject LibraryProject` and serves as the foundation for learning Django development.
+This is the initial Django project for the Introduction to Django task. The project was created using `django-admin startproject LibraryProject` and serves as the foundation for learning Django developmengt.
 
 ## Project Structure
 - `manage.py`: Command-line utility for interacting with the Django project.
