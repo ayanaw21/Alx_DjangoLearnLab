@@ -6,7 +6,7 @@ from .models import Book
 from .serializers import BookSerializer
 
 # List all books
-class ListView(generics.ListAPIView):
+class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]  # Read-only access for unauthenticated users
