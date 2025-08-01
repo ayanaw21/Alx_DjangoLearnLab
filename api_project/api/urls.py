@@ -1,12 +1,15 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import BookList, DetailView, CreateView, UpdateView, DeleteView, BookViewSet
+from .views import BookList, DetailView, CreateView, UpdateView, DeleteView, BookViewSet, api_info
 
 # Create a router and register our ViewSet
 router = DefaultRouter()
 router.register(r'books_all', BookViewSet, basename='book_all')
 
 urlpatterns = [
+    # API Information and Documentation
+    path('info/', api_info, name='api-info'),
+    
     # Route for the BookList view (ListAPIView)
     path('books/', BookList.as_view(), name='book-list'),
     
