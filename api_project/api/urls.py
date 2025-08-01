@@ -1,10 +1,15 @@
-from django.urls import path
-from .views import BookList, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import BookList, DetailView, CreateView, UpdateView, DeleteView, BookViewSet
+
+# Create a router and register our ViewSet
+router = DefaultRouter()
+router.register(r'books_all', BookViewSet, basename='book_all')
 
 urlpatterns = [
-    path('books/', BookList.as_view(), name='book-list'),  # List all books
-    path('books/<int:pk>/', DetailView.as_view(), name='detail-view'),  # Retrieve a single book by ID
-    path('books/create/', CreateView.as_view(), name='create-view'),  # Add a new book
-    path('books/<int:pk>/books/update/', UpdateView.as_view(), name='update-view'),  # Update an existing book
-    path('books/<int:pk>/books/delete', DeleteView.as_view(), name='delete-view'),  # Delete a book
+    # Route for the BookList view (ListAPIView)
+    path('books/', BookList.as_view(), name='book-list'),
+    
+    # Include the router URLs for BookViewSet (all CRUD operations)
+    path('', include(router.urls)),  # This includes all routes registered with the router
 ]
