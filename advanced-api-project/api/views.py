@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
 from .serializers import BookSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -25,7 +26,7 @@ class CreateView(generics.CreateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users
+    permission_classes = [IsAuthenticated]  # Only authenticated users
 
     def perform_create(self, serializer):
         """
@@ -45,7 +46,7 @@ class UpdateView(generics.UpdateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users
+    permission_classes = [IsAuthenticated]  # Only authenticated users
 
     def perform_update(self, serializer):
         """
@@ -58,7 +59,7 @@ class UpdateView(generics.UpdateAPIView):
         """
         # You can add pre-create validation here
         return super().create(request, *args, **kwargs)
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
 class DeleteView(generics.DestroyAPIView):
     """
@@ -73,4 +74,4 @@ class DeleteView(generics.DestroyAPIView):
         Custom delete logic can be added here
         """
         super().perform_destroy(instance)
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
