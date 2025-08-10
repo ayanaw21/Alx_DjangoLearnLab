@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from .models import Book
 from .serializers import BookSerializer
 from .permissions import IsOwnerOrReadOnly
-from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters import rest_framework as filters
 from .filters import BookFilter
 
@@ -18,8 +17,8 @@ class ListView(generics.ListAPIView):
     # Filter backends configuration
     filter_backends = [
         filters.DjangoFilterBackend,  # For field filtering
-        SearchFilter,                # For search functionality
-        OrderingFilter               # For ordering results
+        filters.SearchFilter,                # For search functionality
+        filters.OrderingFilter               # For ordering results
     ]
     
     # Filtering setup
