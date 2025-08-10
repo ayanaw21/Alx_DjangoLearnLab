@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from django_filters import rest_framework as filters
 from .models import Book
 from .serializers import BookSerializer
 
@@ -15,7 +15,7 @@ class BookList(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]  # Read-only access for unauthenticated users
 
     # Add filtering, searching, and ordering backends
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
 
     # Configure fields for filtering, searching, and ordering
     filterset_fields = ['title', 'author__name', 'publication_year']  # Filter by title, author's name, and year
@@ -116,7 +116,7 @@ class BookViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]  # Read-only for unauthenticated users, full access for authenticated
     
     # Add filtering, searching, and ordering backends
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     
     # Configure fields for filtering, searching, and ordering
     filterset_fields = ['title', 'author__name', 'publication_year']
