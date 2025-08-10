@@ -1,46 +1,76 @@
 from rest_framework import generics, permissions
-from .models import Book, Author
-from .serializers import BookSerializer, AuthorSerializer
-from .permissions import IsAdminOrReadOnly
+from .models import Book
+from .serializers import BookSerializer
+from .permissions import IsOwnerOrReadOnly
 
-class BookListCreateView(generics.ListCreateAPIView):
+class ListView(generics.ListAPIView):
+    """
+    View to list all books (GET /books/)
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]  # Read-only for all users
+
+class DetailView(generics.RetrieveAPIView):
+    """
+    View to retrieve a single book (GET /books/<id>/)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]  # Read-only for all users
+
+class CreateView(generics.CreateAPIView):
+    """
+    View to create a new book (POST /books/create/)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users
 
     def perform_create(self, serializer):
-        # You could add custom logic here before saving
+        """
+        Custom create logic can be added here
+        """
         serializer.save()
-
-    def get_queryset(self):
+    def create(self, request, *args, **kwargs):
         """
-        Optionally filter books by publication year via query parameter
-        Example: /api/books/?year=2020
+        Custom create method with additional validation
         """
-        queryset = Book.objects.all()
-        year = self.request.query_params.get('year')
-        if year is not None:
-            queryset = queryset.filter(publication_year=year)
-        return queryset
+        # You can add pre-create validation here
+        return super().create(request, *args, **kwargs)
 
-class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class UpdateView(generics.UpdateAPIView):
     """
-    View to retrieve, update or delete a single book instance.
+    View to update an existing book (PUT /books/<id>/update/)
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users
 
-class AuthorListView(generics.ListAPIView):
+    def perform_update(self, serializer):
+        """
+        Custom update logic can be added here
+        """
+        serializer.save()
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create method with additional validation
+        """
+        # You can add pre-create validation here
+        return super().create(request, *args, **kwargs)
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+
+class DeleteView(generics.DestroyAPIView):
     """
-    View to list all authors.
+    View to delete a book (DELETE /books/<id>/delete/)
     """
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Only authenticated users
 
-
-class BookListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminOrReadOnly]  # Changed from previous
-
-class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminOrReadOnly]  # Changed from previous
+    def perform_destroy(self, instance):
+        """
+        Custom delete logic can be added here
+        """
+        super().perform_destroy(instance)
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
