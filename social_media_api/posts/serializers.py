@@ -1,19 +1,20 @@
 from rest_framework import serializers
 from .models import Post, Comment
+from django.contrib.auth import get_user_model
 
 class CommentSerializer(serializers.ModelSerializer):
-    author_username = serializers.ReadOnlyField(source='author.username')
+    author = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
 
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'author', 'author_username', 'content', 'created_at', 'updated_at']
-        read_only_fields = ['author', 'created_at', 'updated_at']
+        fields = ['author', 'post', 'content', 'created_at', 'updated_at']
+
 
 class PostSerializer(serializers.ModelSerializer):
-    author_username = serializers.ReadOnlyField(source='author.username')
+    author = serializers.PrimaryKeyRelatedField(queryset=get_user_model().objects.all())
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'author', 'author_username', 'title', 'content', 'created_at', 'updated_at', 'comments']
-        read_only_fields = ['author', 'created_at', 'updated_at']
+        fields = ['author', 'title', 'content', 'comments', 'created_at', 'updated_at']
